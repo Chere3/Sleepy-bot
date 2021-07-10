@@ -4,4 +4,7 @@
 # NPM
 node_modules
 
+
 # Keys
+
+.env
