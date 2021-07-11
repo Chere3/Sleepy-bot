@@ -4,6 +4,7 @@ import { handlers } from './Util/Functions/handlers'
 import Captain from 'captainjs'
 import login from './Database/login'
 import './Typings'
+import { Verification } from "./Util/Classes/verificationSystem"
 
 global.prettyConsole = new Captain.Console({
     "use_colors": true,
@@ -19,6 +20,8 @@ global.prettyConsole = new Captain.Console({
 const TempoClient = new Client({partials: ["CHANNEL", "GUILD_MEMBER", "MESSAGE", "REACTION", "USER"], disableMentions: "everyone"})
 
 require("discord-buttons")(TempoClient);
+
+TempoClient.verification = Verification
 
 TempoClient.commands = new Collection();
 

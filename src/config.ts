@@ -7,7 +7,7 @@ export const config = {
         token: process.env.TOKEN,
         mongoURI: process.env.MONGO_URI
     },
-    prefix: "!",
+    prefix: "sb!",
     invite: "Link invitación bot",
     serverInvite: "Link server soporte"
 }

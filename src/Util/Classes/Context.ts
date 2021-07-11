@@ -30,6 +30,10 @@ export class TempContext {
         return this.message.member;
     }
 
+    get author() {
+        return this.message.author;
+    }
+
     send(content: any, adds?: any) {
         return this.channel.send(content, adds).catch((e) => { console.log(e) });
     }
