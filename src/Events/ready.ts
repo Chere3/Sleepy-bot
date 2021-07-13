@@ -19,8 +19,7 @@ export const run = async (bot: Client) => {
     const activity = [
         `dnd`, 
         `idle`,
-        `online`, 
-        `invisible`
+        `online`
     ], estado = activity[Math.floor(Math.random() * statuses.length)];
 
 
