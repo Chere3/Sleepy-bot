@@ -1,8 +1,5 @@
 # Editor Config
 .vscode
 
-# NPM
-node_modules
-
 # Keys
 .env
