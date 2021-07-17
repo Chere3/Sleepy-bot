@@ -17,8 +17,8 @@ const units = [
   ];
 
 export class TimeStamp {
-    timestamp: number;
-    constructor(timestamp: number) {
+    timestamp: number | string;
+    constructor(timestamp: number | string) {
         this.timestamp = timestamp;
     }
 
@@ -98,6 +98,27 @@ export class TimeStamp {
             return [a, b, c, d, e, f, g];
         }
         return this.agoO(new Date(this.timestamp), maxium);
+    }
+
+    invert(str: string) {
+        var x = str.length;
+        var invertida = "";
+    
+        while (x>=0) {
+            invertida = invertida + str.charAt(x);
+            x--;
+        }
+         return invertida;
+    }
+    
+    // Language: typescript
+    
+    OutDecimals() {
+        var si = this.invert(`${this.timestamp}`)
+        var no = si.slice(3)
+        var noo = this.invert(no);
+    
+        return noo;
     }
 
 

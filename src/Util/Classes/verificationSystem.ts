@@ -26,23 +26,24 @@ export class Verification {
       .setTimestamp()
       .setFooter(`Manda un mensaje con la respuesta.`);
 
-    const amsg = await this.channel.send(a);
+    const amsg = await this.usuario.send(a).catch(() => {return this.channel.send(`${this.usuario} Tienes los DMS desactivados!. Por activalos e intentalo más tarde.`).then(a => a.delete({timeout: 5000}))})
+    this.channel.send(`${this.usuario} Revisa tus mensajes privados, te he enviado algunas preguntas adicionales`)
     const filter = (x) => {
       return x.author.id === this.usuario.id;
     };
-    const aaaa = await this.channel.awaitMessages(filter, {
+    const aaaa = await this.usuario.dmChannel.awaitMessages(filter, {
       max: 1,
       time: 60000,
     });
 
     if (!aaaa.size) {
-      this.channel.send(
+      this.usuario.send(
         `El tiempo para contestar ha caducado, pon el comando \`sb!verify\` para reintentar.`
       );
       return amsg.delete();
     }
 
-    aaaa.first().delete();
+    
     const b = new MessageEmbed()
       .setColor(`RED`)
       .setDescription(
@@ -53,19 +54,19 @@ export class Verification {
 
       amsg.edit(b)
       
-      const bbbb = await this.channel.awaitMessages(filter, {
+      const bbbb = await this.usuario.dmChannel.awaitMessages(filter, {
         max: 1,
         time: 60000,
       });
 
       if(!bbbb.size) {
-        this.channel.send(
+        this.usuario.send(
           `El tiempo para contestar ha caducado, pon el comando \`sb!verify\` para reintentar.`
         );
         return amsg.delete();
       }
 
-      bbbb.first().delete();
+      
 
       const c = new MessageEmbed()
       .setColor(`RED`)
@@ -77,19 +78,19 @@ export class Verification {
 
       amsg.edit(c)
       
-      const cccc = await this.channel.awaitMessages(filter, {
+      const cccc = await this.usuario.dmChannel.awaitMessages(filter, {
         max: 1,
         time: 60000,
       });
 
       if(!cccc.size) {
-        this.channel.send(
+        this.usuario.dmChannel.send(
           `El tiempo para contestar ha caducado, pon el comando \`sb!verify\` para reintentar.`
         );
         return amsg.delete();
       }
 
-      cccc.first().delete();
+      
 
       const d = new MessageEmbed()
       .setColor(`RED`)
@@ -101,19 +102,19 @@ export class Verification {
 
       amsg.edit(d)
       
-      const dddd = await this.channel.awaitMessages(filter, {
+      const dddd = await this.usuario.dmChannel.awaitMessages(filter, {
         max: 1,
         time: 60000,
       });
 
       if(!dddd.size) {
-        this.channel.send(
+        this.usuario.send(
           `El tiempo para contestar ha caducado, pon el comando \`sb!verify\` para reintentar.`
         );
         return amsg.delete();
       }
 
-      dddd.first().delete();
+      
 
       amsg.delete();
       const schema = [aaaa.first().content, bbbb.first().content, cccc.first().content, dddd.first().content];
@@ -122,28 +123,35 @@ export class Verification {
   }
 
   async veri() {
-    this.preguntas().then((pregunta: Array<string>) => {
-      const mala = new MessageEmbed().setColor(0x00ad0e0e).setAuthor(`🛑 No has superado los estandares de calidad.`).setDescription(`Lo siento pero no has superado mis estandares de calidad para poder entrar al servidor. Por intentalo más tarde poniendo sb!verify`);
-      pregunta.forEach(a => {
-        if (a.length < 5) {
-          return this.channel.send(mala).then(a => a.delete({timeout: 5000}))
-        }
+    this.checkAccount().then((switcher: boolean) => {
+      if (switcher == true) {
+        this.passed().catch(() => {});
+        this.Logger().catch(() => {});
+      }
 
-        if (a.length > 100) {
-          return this.channel.send(mala).then(a => a.delete({timeout: 5000}))
-        }
-
-
-        nombres.forEach(a => {
-          if (this.usuario.username.includes(`${a}`)) {
-            return this.channel.send(mala).then(a => a.delete({timeout: 5000}))
-          }
+      if (switcher == false) {
+        this.preguntas().then((pregunta: Array<string>) => {
+          const mala = new MessageEmbed().setColor(0x00ad0e0e).setAuthor(`🛑 No has superado los estandares de calidad.`).setDescription(`Lo siento pero no has superado mis estandares de calidad para poder entrar al servidor. Por intentalo más tarde poniendo sb!verify`);
+          pregunta.forEach(a => {
+            if (a.length < 5) {
+              return this.channel.send(mala).then(a => a.delete({timeout: 5000}))
+            }
+    
+            if (a.length > 100) {
+              return this.channel.send(mala).then(a => a.delete({timeout: 5000}))
+            }
+    
+    
+            nombres.forEach(a => {
+              if (this.usuario.username.includes(`${a}`)) {
+                return this.channel.send(mala).then(a => a.delete({timeout: 5000}))
+              }
+            })
+          })
         })
-
-        return 
-
-      })
+      }
     })
+    
   }
 
   async passed() {
@@ -153,16 +161,34 @@ export class Verification {
 
   async checkAccount() {
     // Check all about a discord user
-    this.guild.channels.cache.get("862050517458747442").send(`${this.usuario} Estoy revisando tu cuenta, espera un momento`).catch(() => {});
+    this.guild.channels.cache.get("862050517458747442").send(`${this.usuario} Estoy revisando tu cuenta, espera un momento`).then((a) => a.delete({timeout: 5000})).catch(() => {});
     const age = new TimeStamp(this.usuario.createdTimestamp).relativeNum("día");
     
-    if (Number(age) > 30) {
+    if (Number(age) <= 30) {
       return false;
     }
 
+    if (this.usuario.bot == true) {
+      return true;
+    }
 
-
-    return true;
     
+    
+    return true;
+
   }
+
+  async Logger() {
+    const si = new MessageEmbed()
+    .setColor(`GREEN`)
+    .setAuthor(`${this.usuario.tag} Ha pasado la verificación.`)
+    .setThumbnail(this.usuario.displayAvatarURL())
+    .setDescription(`El usuario **${this.usuario.tag}** ha pasado la verificación satisfactoriamente, ahora podrá ver todos los canales.\n\n **La cuenta fue creada:** <t:${new TimeStamp(`${this.usuario.createdTimestamp}`).OutDecimals()}:R>`)
+    .setTimestamp();
+    this.guild.channels.cache.get(`865905530668187688`).send(si).catch(() => {});
+  }
+
+
+
+
 }
