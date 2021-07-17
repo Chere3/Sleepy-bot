@@ -5,6 +5,7 @@ import Captain from 'captainjs'
 import login from './Database/login'
 import './Typings'
 import { Verification } from "./Util/Classes/verificationSystem"
+import { TimeStamp } from "./Util/Classes/time"
 
 global.prettyConsole = new Captain.Console({
     "use_colors": true,
@@ -17,14 +18,14 @@ global.prettyConsole = new Captain.Console({
     "debug_prefix": "§bDebug"
 });
 
-const TempoClient = new Client({partials: ["CHANNEL", "GUILD_MEMBER", "MESSAGE", "REACTION", "USER"], disableMentions: "everyone"})
+const TempoClient = new Client({partials: ["CHANNEL", "GUILD_MEMBER", "MESSAGE", "REACTION", "USER"], disableMentions: "everyone", fetchAllMembers: true})
 
 require("discord-buttons")(TempoClient);
 
 TempoClient.verification = Verification
 
 TempoClient.commands = new Collection();
-
+TempoClient.time = TimeStamp;
 handlers(TempoClient)
 
 login.then(() => { global.prettyConsole.log(`Se ha conectado a la database satisfactoriamente.`) })

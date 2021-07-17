@@ -7,6 +7,9 @@ declare module 'discord.js' {
     interface Client {
         commands: Collection<string, BaseCommand>
         verification: Object
+        time: Object
+        convert: Object
+        number: Object
     }
 
     interface Channel {
